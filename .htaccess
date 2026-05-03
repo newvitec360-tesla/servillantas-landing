@@ -1,2 +1,24 @@
+# === Servillantas El Puente — Landing Only ===
+# Domain: servillantaselpuente.com
+# Purpose: Redirect root to landing, protect sensitive files
+
 RewriteEngine On
-RewriteRule ^admin-landing$ index.php?r=/admin-landing [L,QSA]
+
+# Force HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Block access to sensitive files
+<FilesMatch "^\.env$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "\.(sql|log|bak|old)$">
+    Require all denied
+</FilesMatch>
+
+# Block storage directory
+RewriteRule ^storage/ - [F,L]
+
+# Root request → redirect to landing router
+RewriteRule ^$ landing/index.html [L]

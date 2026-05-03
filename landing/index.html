@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Servillantas El Puente | Demo Landing</title>
+  <meta name="description" content="Router del demo Servillantas El Puente: escritorio y móvil están separados para desarrollo independiente." />
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #f5f5f5;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #1d1d1f;
+    }
+    .loader {
+      max-width: 620px;
+      margin: 28px;
+      padding: 32px;
+      border-radius: 26px;
+      background: #fff;
+      box-shadow: 0 24px 70px rgba(0,0,0,.10);
+      text-align: center;
+    }
+    .loader img { max-height: 76px; margin: 0 6px 18px; vertical-align: middle; }
+    .loader h1 { margin: 0 0 10px; font-size: clamp(26px, 4vw, 38px); line-height: 1; }
+    .loader p { margin: 0 auto 20px; max-width: 480px; color: #5f6368; line-height: 1.6; }
+    .actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 46px; padding: 0 18px; border-radius: 12px;
+      text-decoration: none; font-weight: 800; font-size: 14px;
+      border: 1px solid #e00012;
+    }
+    .btn.primary { background: #e00012; color: white; }
+    .btn.secondary { color: #e00012; background: white; }
+  </style>
+  <script>
+    (function () {
+      var explicit = new URLSearchParams(window.location.search).get('view');
+      if (explicit === 'desktop') window.location.replace('desktop/desktop.php');
+      if (explicit === 'mobile') window.location.replace('mobile/mobile.php');
+      if (explicit === 'admin') window.location.replace('admin/index.html');
+      if (window.innerWidth <= 767) window.location.replace('mobile/mobile.php');
+      else window.location.replace('desktop/desktop.php');
+    })();
+  </script>
+</head>
+<body>
+  <main class="loader">
+    <img src="assets/img/logo-servillantas.png" alt="Servillantas El Puente">
+    <img src="assets/img/logo-24-horas.png" alt="Servicio las 24 horas">
+    <h1>Demo Servillantas El Puente</h1>
+    <p>Este index redirige automáticamente a la versión móvil o escritorio. También puedes abrir una versión específica.</p>
+    <div class="actions">
+      <a class="btn primary" href="desktop/desktop.php">Ver escritorio</a>
+      <a class="btn secondary" href="mobile/mobile.php">Ver móvil</a>
+      <a class="btn secondary" href="admin/index.html">Abrir gestor</a>
+    </div>
+  </main>
+</body>
+</html>

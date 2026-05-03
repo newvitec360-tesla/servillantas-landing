@@ -1,0 +1,1 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>404</title><body style="font-family:system-ui;padding:40px"><h1>Ruta no encontrada</h1><p>No existe la ruta solicitada.</p><a href="/desktop/index.php">Volver al dashboard</a></body></html>

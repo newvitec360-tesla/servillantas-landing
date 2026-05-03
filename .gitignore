@@ -1,0 +1,11 @@
+.env
+Datos-FTP-DB.txt
+/vendor/
+/node_modules/
+storage/logs/*.log
+storage/uploads/*
+!storage/uploads/.gitkeep
+public/uploads/*
+!public/uploads/.gitkeep
+.DS_Store
+Thumbs.db

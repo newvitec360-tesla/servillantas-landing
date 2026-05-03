@@ -1,0 +1,13 @@
+DirectoryIndex index.php index.html
+Options -Indexes
+
+# Proteger archivos sensibles del acceso directo
+<FilesMatch "\.(env|log)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+<Files "Datos-FTP-DB.txt">
+    Order Allow,Deny
+    Deny from all
+</Files>

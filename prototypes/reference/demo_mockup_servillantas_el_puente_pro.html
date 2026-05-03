@@ -1,0 +1,2453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demo Pro - Servillantas El Puente</title>
+  <style>
+    :root{
+      --bg:#f4f5f8;
+      --panel:#ffffff;
+      --panel-2:#fafbfc;
+      --line:#e8eaee;
+      --text:#1d2129;
+      --muted:#717786;
+      --red:#e30713;
+      --red-dark:#b8050e;
+      --black:#111318;
+      --black-2:#171a21;
+      --green:#25a55b;
+      --amber:#f2a100;
+      --orange:#ff7c1f;
+      --blue:#2f6ef3;
+      --purple:#6a40ea;
+      --danger-bg:#ffe8ea;
+      --success-bg:#eaf8ef;
+      --warning-bg:#fff4df;
+      --info-bg:#eaf0ff;
+      --shadow:0 14px 34px rgba(15,19,24,.06);
+      --shadow-soft:0 8px 24px rgba(15,19,24,.05);
+      --radius:22px;
+      --radius-sm:14px;
+      --sidebar-w:244px;
+      --top-h:74px;
+      --anim:.22s cubic-bezier(.2,.75,.2,1);
+    }
+
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    button, input, select, textarea { font: inherit; }
+
+    .app {
+      display:grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      min-height:100vh;
+    }
+
+    .sidebar {
+      position:sticky;
+      top:0;
+      height:100vh;
+      overflow:auto;
+      background:
+        radial-gradient(circle at top left, rgba(227,7,19,.12), transparent 32%),
+        linear-gradient(180deg, #0f1116 0%, #13161d 60%, #101217 100%);
+      color:#fff;
+      border-right:1px solid rgba(255,255,255,.06);
+      padding:18px 14px;
+    }
+
+    .brand {
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.07);
+      border-radius:28px;
+      padding:14px 14px 16px;
+      text-align:center;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+      margin-bottom:18px;
+    }
+
+    .brand img {
+      width:128px;
+      max-width:100%;
+      display:block;
+      margin:2px auto 10px;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.22));
+      border-radius:18px;
+      background:#fff;
+      padding:6px;
+    }
+
+    .brand p {
+      margin:0;
+      font-size:11px;
+      letter-spacing:.05em;
+      color:#c1c6d3;
+      line-height:1.55;
+    }
+
+    .nav {
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .nav-btn {
+      position:relative;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      width:100%;
+      border:none;
+      background:transparent;
+      color:#d6dae3;
+      text-align:left;
+      padding:13px 14px;
+      border-radius:16px;
+      cursor:pointer;
+      transition:transform var(--anim), background var(--anim), color var(--anim), box-shadow var(--anim);
+    }
+
+    .nav-btn:hover {
+      background:rgba(255,255,255,.05);
+      color:#fff;
+      transform:translateX(2px);
+    }
+
+    .nav-btn.active {
+      background:var(--red);
+      color:#fff;
+      box-shadow:0 14px 28px rgba(227,7,19,.28);
+    }
+
+    .nav-btn .icon {
+      width:18px;
+      height:18px;
+      display:inline-grid;
+      place-items:center;
+      flex:0 0 18px;
+      opacity:.95;
+      font-size:15px;
+    }
+
+    .sidebar-help {
+      margin-top:18px;
+      border-top:1px solid rgba(255,255,255,.08);
+      padding-top:16px;
+      color:#a9aebb;
+      font-size:12px;
+      line-height:1.6;
+    }
+
+    .main {
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .topbar {
+      position:sticky;
+      top:0;
+      z-index:80;
+      height:var(--top-h);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      padding:14px 22px;
+      background:rgba(244,245,248,.9);
+      backdrop-filter: blur(14px);
+      border-bottom:1px solid var(--line);
+    }
+
+    .topbar-left {
+      display:flex;
+      align-items:center;
+      gap:14px;
+      flex:1;
+      min-width:0;
+    }
+
+    .burger {
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fff;
+      display:grid;
+      place-items:center;
+      color:#555a67;
+      cursor:pointer;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .search {
+      position:relative;
+      max-width:560px;
+      width:100%;
+    }
+
+    .search input {
+      width:100%;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:16px;
+      padding:14px 48px 14px 44px;
+      color:var(--text);
+      outline:none;
+      box-shadow:var(--shadow-soft);
+      transition:border-color var(--anim), box-shadow var(--anim);
+    }
+
+    .search input:focus {
+      border-color:#f0b1b6;
+      box-shadow:0 0 0 4px rgba(227,7,19,.08);
+    }
+
+    .search .sicon {
+      position:absolute;
+      left:14px;
+      top:11px;
+      color:#8f94a1;
+      font-size:18px;
+    }
+
+    .search .go {
+      position:absolute;
+      right:10px;
+      top:8px;
+      width:32px;
+      height:32px;
+      border-radius:12px;
+      display:grid;
+      place-items:center;
+      color:#656b78;
+      background:#f5f6f8;
+      border:1px solid var(--line);
+    }
+
+    .topbar-right {
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .icon-chip {
+      position:relative;
+      width:44px;
+      height:44px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:#fff;
+      display:grid;
+      place-items:center;
+      box-shadow:var(--shadow-soft);
+      color:#5a6070;
+    }
+
+    .icon-chip .bubble {
+      position:absolute;
+      top:-4px;
+      right:-2px;
+      min-width:18px;
+      height:18px;
+      padding:0 5px;
+      display:grid;
+      place-items:center;
+      border-radius:999px;
+      background:var(--red);
+      color:#fff;
+      font-size:11px;
+      font-weight:800;
+      box-shadow:0 8px 18px rgba(227,7,19,.26);
+    }
+
+    .user {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background:#fff;
+      border:1px solid var(--line);
+      padding:7px 12px 7px 8px;
+      border-radius:18px;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .avatar {
+      width:36px;
+      height:36px;
+      border-radius:14px;
+      background:var(--black);
+      color:#fff;
+      display:grid;
+      place-items:center;
+      font-weight:800;
+      font-size:13px;
+    }
+
+    .user div {
+      line-height:1.2;
+    }
+
+    .user strong {
+      font-size:13px;
+      display:block;
+    }
+
+    .user span {
+      font-size:11px;
+      color:var(--muted);
+    }
+
+    .content {
+      padding:22px;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    .page {
+      display:none;
+      animation:fadeIn .22s ease;
+    }
+
+    .page.active {
+      display:block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity:.45; transform:translateY(8px); }
+      to { opacity:1; transform:translateY(0); }
+    }
+
+    .page-head {
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:16px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+
+    .page-head h1 {
+      margin:0 0 6px;
+      font-size:20px;
+      line-height:1.1;
+      letter-spacing:-.02em;
+    }
+
+    .page-head p {
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .actions {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .btn {
+      border:none;
+      border-radius:15px;
+      padding:12px 16px;
+      font-weight:700;
+      cursor:pointer;
+      transition:transform var(--anim), box-shadow var(--anim), opacity var(--anim), background var(--anim);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+    }
+
+    .btn:hover { transform:translateY(-1px); }
+    .btn.primary {
+      background:var(--red);
+      color:#fff;
+      box-shadow:0 14px 26px rgba(227,7,19,.24);
+    }
+    .btn.primary:hover { background:var(--red-dark); }
+    .btn.secondary {
+      background:#fff;
+      color:var(--text);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-soft);
+    }
+    .btn.ghost {
+      background:transparent;
+      border:1px dashed var(--line);
+      color:var(--muted);
+    }
+    .btn.small {
+      padding:8px 11px;
+      border-radius:12px;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .grid {
+      display:grid;
+      gap:16px;
+    }
+    .cols-5 { grid-template-columns:repeat(5,minmax(0,1fr)); }
+    .cols-4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+    .cols-3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .cols-2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .main-2-1 { grid-template-columns:minmax(0,2fr) minmax(320px,1fr); }
+    .main-3 { grid-template-columns:1.12fr 1.08fr .9fr; }
+
+    .card {
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .card-head {
+      padding:16px 18px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .card-head h3 {
+      margin:0;
+      font-size:16px;
+    }
+
+    .card-head small {
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .card-body {
+      padding:16px 18px;
+    }
+
+    .card-body.tight {
+      padding:8px 12px;
+    }
+
+    .metric {
+      display:flex;
+      align-items:center;
+      gap:14px;
+      padding:16px 18px;
+      position:relative;
+    }
+
+    .metric::after {
+      content:"";
+      position:absolute;
+      inset:auto 18px 12px auto;
+      width:48px;
+      height:18px;
+      background:linear-gradient(90deg, rgba(227,7,19,.14), rgba(227,7,19,0));
+      opacity:.8;
+      filter:blur(6px);
+      border-radius:999px;
+    }
+
+    .metric-icon {
+      width:54px;
+      height:54px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-size:22px;
+      flex:0 0 54px;
+      font-weight:800;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.15);
+    }
+
+    .metric.red .metric-icon { background:var(--red); }
+    .metric.black .metric-icon { background:#121318; }
+    .metric.green .metric-icon { background:var(--green); }
+    .metric.amber .metric-icon { background:var(--amber); }
+    .metric.blue .metric-icon { background:var(--blue); }
+    .metric.purple .metric-icon { background:var(--purple); }
+
+    .metric-meta span {
+      display:block;
+      font-size:11px;
+      text-transform:uppercase;
+      color:var(--muted);
+      letter-spacing:.05em;
+      font-weight:800;
+      margin-bottom:6px;
+    }
+
+    .metric-meta strong {
+      display:block;
+      font-size:18px;
+      margin-bottom:4px;
+      letter-spacing:-.02em;
+    }
+
+    .metric-meta small {
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .up { color:var(--green); font-weight:800; }
+    .down { color:var(--red); font-weight:800; }
+
+    .box {
+      padding:14px;
+      border:1px solid var(--line);
+      background:var(--panel-2);
+      border-radius:16px;
+    }
+
+    .box strong {
+      display:block;
+      margin-bottom:4px;
+    }
+
+    .muted { color:var(--muted); }
+
+    .split {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+    }
+
+    .table-wrap {
+      overflow:auto;
+      border-radius:14px;
+    }
+
+    table {
+      width:100%;
+      border-collapse:collapse;
+      font-size:13px;
+      min-width:760px;
+    }
+
+    thead th {
+      position:sticky;
+      top:0;
+      background:#fbfbfc;
+      z-index:2;
+      text-transform:uppercase;
+      font-size:11px;
+      letter-spacing:.04em;
+      color:var(--muted);
+      border-bottom:1px solid var(--line);
+      padding:12px 10px;
+      text-align:left;
+      user-select:none;
+      cursor:pointer;
+    }
+
+    tbody td {
+      border-bottom:1px solid var(--line);
+      padding:11px 10px;
+      vertical-align:middle;
+      white-space:nowrap;
+    }
+
+    tbody tr {
+      transition:background var(--anim), transform var(--anim);
+    }
+
+    tbody tr:hover td {
+      background:#fcfcfd;
+    }
+
+    .pill {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      line-height:1;
+    }
+
+    .pill.red { background:var(--danger-bg); color:#c6121c; }
+    .pill.green { background:var(--success-bg); color:#1e8b49; }
+    .pill.amber { background:var(--warning-bg); color:#b87a02; }
+    .pill.blue { background:var(--info-bg); color:var(--blue); }
+    .pill.gray { background:#eff1f5; color:#5e6472; }
+    .pill.purple { background:#f0eaff; color:var(--purple); }
+
+    .stack {
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .mini-item {
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:14px;
+      padding:10px 0;
+      border-bottom:1px solid var(--line);
+    }
+
+    .mini-item:last-child {
+      border-bottom:none;
+    }
+
+    .insight {
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      padding:10px 0;
+      border-bottom:1px solid var(--line);
+    }
+
+    .insight:last-child {
+      border-bottom:none;
+    }
+
+    .dot {
+      width:30px;
+      height:30px;
+      border-radius:999px;
+      background:#f3f4f7;
+      display:grid;
+      place-items:center;
+      flex:0 0 30px;
+      font-size:13px;
+    }
+
+    .donut {
+      width:160px;
+      height:160px;
+      border-radius:50%;
+      position:relative;
+      margin:0 auto;
+    }
+
+    .donut::after {
+      content:attr(data-label);
+      white-space:pre-line;
+      position:absolute;
+      inset:26px;
+      border-radius:50%;
+      background:#fff;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      font-size:14px;
+      font-weight:800;
+      line-height:1.35;
+      color:#222;
+      padding:10px;
+      box-shadow: inset 0 1px 0 rgba(0,0,0,.04);
+    }
+
+    .chart-panel {
+      background:
+        linear-gradient(to top, rgba(0,0,0,.045) 1px, transparent 1px) 0 0/100% 36px,
+        linear-gradient(to right, rgba(0,0,0,.03) 1px, transparent 1px) 0 0/52px 100%;
+      border:1px solid var(--line);
+      border-radius:18px;
+      height:190px;
+      position:relative;
+      overflow:hidden;
+      background-color:#fff;
+    }
+
+    .chart-panel svg {
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+    }
+
+    .legend {
+      display:flex;
+      flex-wrap:wrap;
+      gap:14px;
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:12px;
+    }
+
+    .legend i {
+      width:10px;
+      height:10px;
+      display:inline-block;
+      border-radius:999px;
+      margin-right:6px;
+      vertical-align:middle;
+    }
+
+    .stack-bars .row {
+      display:grid;
+      grid-template-columns:90px 1fr;
+      gap:10px;
+      align-items:center;
+      margin-bottom:10px;
+      font-size:12px;
+    }
+
+    .bar-track {
+      height:22px;
+      border-radius:999px;
+      overflow:hidden;
+      background:#f1f3f6;
+      display:flex;
+    }
+
+    .seg {
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-weight:800;
+      font-size:11px;
+    }
+
+    .funnel .frow {
+      display:grid;
+      grid-template-columns:1.1fr 1.6fr 64px;
+      gap:10px;
+      align-items:center;
+      margin-bottom:14px;
+      font-size:13px;
+    }
+
+    .fbar {
+      height:18px;
+      border-radius:999px;
+      background:#f1f2f5;
+      overflow:hidden;
+    }
+
+    .fbar > span {
+      display:block;
+      height:100%;
+      background:linear-gradient(90deg, var(--red), #ff4650);
+      border-radius:999px;
+    }
+
+    .settings-layout {
+      display:grid;
+      grid-template-columns:280px 1fr;
+      gap:16px;
+    }
+
+    .inner-nav {
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:10px;
+      align-self:start;
+      position:sticky;
+      top:calc(var(--top-h) + 18px);
+    }
+
+    .inner-nav button {
+      width:100%;
+      padding:14px 14px;
+      border:none;
+      background:transparent;
+      border-radius:16px;
+      text-align:left;
+      cursor:pointer;
+      font-weight:700;
+      color:#333843;
+      transition:background var(--anim), color var(--anim), transform var(--anim);
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .inner-nav button:hover {
+      background:#f7f8fa;
+      transform:translateX(2px);
+    }
+
+    .inner-nav button.active {
+      background:#fff1f2;
+      color:var(--red);
+      border-left:4px solid var(--red);
+      padding-left:10px;
+    }
+
+    .tab-panel {
+      display:none;
+    }
+
+    .tab-panel.active {
+      display:block;
+      animation:fadeIn .2s ease;
+    }
+
+    .browser {
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:26px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+
+    .browser-top {
+      background:#fafafa;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      gap:12px;
+      align-items:center;
+      padding:12px 14px;
+    }
+
+    .lights {
+      display:flex;
+      gap:7px;
+    }
+
+    .lights i {
+      width:12px;
+      height:12px;
+      border-radius:999px;
+      display:block;
+    }
+
+    .address {
+      flex:1;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:12px;
+      padding:10px 14px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .portal-hero {
+      display:grid;
+      grid-template-columns:1.25fr 1fr .9fr;
+      gap:16px;
+      background:
+        radial-gradient(circle at right center, rgba(255,255,255,.06), transparent 22%),
+        linear-gradient(90deg, #101217 0%, #161922 100%);
+      border-radius:20px;
+      padding:22px;
+      color:#fff;
+    }
+
+    .portal-actions {
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin:14px 0 16px;
+    }
+
+    .action-tile {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px;
+      border-radius:17px;
+      background:#fff;
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-soft);
+      cursor:pointer;
+      transition:transform var(--anim), box-shadow var(--anim);
+    }
+
+    .action-tile:hover {
+      transform:translateY(-2px);
+      box-shadow:0 16px 28px rgba(15,19,24,.08);
+    }
+
+    .action-tile.primary {
+      background:var(--red);
+      color:#fff;
+      border-color:var(--red);
+    }
+
+    .toast-wrap {
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      z-index:200;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      pointer-events:none;
+    }
+
+    .toast {
+      background:#151821;
+      color:#fff;
+      padding:14px 16px;
+      min-width:260px;
+      border-radius:16px;
+      box-shadow:0 18px 34px rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.06);
+      animation:toastIn .24s ease;
+      pointer-events:auto;
+    }
+
+    .toast strong {
+      display:block;
+      margin-bottom:4px;
+    }
+
+    @keyframes toastIn {
+      from { opacity:0; transform:translateY(10px) scale(.98); }
+      to { opacity:1; transform:none; }
+    }
+
+    .modal-backdrop {
+      position:fixed;
+      inset:0;
+      background:rgba(17,19,24,.44);
+      backdrop-filter: blur(6px);
+      z-index:160;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+    }
+
+    .modal-backdrop.show {
+      display:flex;
+    }
+
+    .modal {
+      width:min(640px, 100%);
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:0 30px 80px rgba(0,0,0,.28);
+      overflow:hidden;
+      animation:modalIn .22s ease;
+    }
+
+    @keyframes modalIn {
+      from { opacity:0; transform:translateY(12px) scale(.98); }
+      to { opacity:1; transform:none; }
+    }
+
+    .modal-head {
+      padding:18px 20px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .modal-head h3 { margin:0; }
+    .modal-body { padding:18px 20px; }
+    .modal-actions {
+      padding:16px 20px;
+      border-top:1px solid var(--line);
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .field {
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+      margin-bottom:14px;
+    }
+
+    .field label {
+      font-size:13px;
+      font-weight:700;
+      color:#37404d;
+    }
+
+    .field input, .field select, .field textarea {
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:14px;
+      padding:12px 13px;
+      outline:none;
+    }
+
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color:#efb7bc;
+      box-shadow:0 0 0 4px rgba(227,7,19,.08);
+    }
+
+    .modal-grid {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+
+    .subtle {
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .footer-note {
+      text-align:center;
+      color:#8a8f9b;
+      font-size:12px;
+      padding:10px 0 4px;
+    }
+
+    @media (max-width: 1320px) {
+      .cols-5 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .main-2-1, .main-3, .settings-layout, .portal-hero, .portal-actions, .split { grid-template-columns:1fr; }
+      .inner-nav { position:relative; top:0; }
+    }
+
+    @media (max-width: 980px) {
+      .app { grid-template-columns:1fr; }
+      .sidebar { position:relative; height:auto; }
+      .content { padding:14px; }
+      .topbar { padding:12px 14px; }
+      .cols-4, .cols-3, .cols-2 { grid-template-columns:1fr; }
+      .search { max-width:none; }
+      .user div { display:none; }
+      .modal-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="data:image/jpeg;base64,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" alt="Logo Servillantas El Puente">
+        <p>Demo HTML interactivo · versión pro<br>fiel al lenguaje visual de los mockups</p>
+      </div>
+
+      <nav class="nav" id="mainNav">
+        <button class="nav-btn active" data-page="dashboard"><span class="icon">▣</span>Dashboard</button>
+        <button class="nav-btn" data-page="clientes"><span class="icon">◫</span>Clientes</button>
+        <button class="nav-btn" data-page="cartera"><span class="icon">⟁</span>Cartera</button>
+        <button class="nav-btn" data-page="expedientes"><span class="icon">☷</span>Expedientes</button>
+        <button class="nav-btn" data-page="campanas"><span class="icon">✉</span>Campañas</button>
+        <button class="nav-btn" data-page="pagos"><span class="icon">◪</span>Pagos</button>
+        <button class="nav-btn" data-page="reportes"><span class="icon">◧</span>Reportes</button>
+        <button class="nav-btn" data-page="configuracion"><span class="icon">⚙</span>Configuración</button>
+        <button class="nav-btn" data-page="deudor"><span class="icon">⌂</span>Portal del deudor</button>
+      </nav>
+
+      <div class="sidebar-help">
+        <strong>Lo nuevo en esta versión</strong><br>
+        • logo original embebido<br>
+        • modales de demo<br>
+        • tabs reales en configuración y expediente<br>
+        • ordenamiento básico en tablas<br>
+        • microanimaciones y toasts<br>
+        • navegación por hash para compartir vista
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="burger" type="button">☰</button>
+          <div class="search">
+            <span class="sicon">⌕</span>
+            <input id="globalSearch" type="text" placeholder="Buscar clientes, documentos, pagos, expedientes..." />
+            <span class="go">↵</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="icon-chip">🔔<span class="bubble">8</span></div>
+          <div class="user">
+            <div class="avatar">JC</div>
+            <div><strong>Juan Camilo</strong><span>Administrador</span></div>
+          </div>
+        </div>
+      </header>
+
+      <div class="content">
+        <!-- DASHBOARD -->
+        <section class="page active" id="page-dashboard">
+          <div class="page-head">
+            <div>
+              <h1>Dashboard general</h1>
+              <p>Resumen ejecutivo de cartera, recaudo, riesgo y actividad reciente.</p>
+            </div>
+            <div class="actions">
+              <button class="btn secondary" data-modal="exportModal">Exportar resumen</button>
+              <button class="btn primary" data-goto="campanas">Ejecutar campaña</button>
+            </div>
+          </div>
+
+          <div class="grid cols-4">
+            <div class="card metric red">
+              <div class="metric-icon">$</div>
+              <div class="metric-meta">
+                <span>Cartera total</span>
+                <strong>$ 3.285.650.000</strong>
+                <small>vs. mes anterior <b class="down">▲ 6,8%</b></small>
+              </div>
+            </div>
+            <div class="card metric black">
+              <div class="metric-icon">↗</div>
+              <div class="metric-meta">
+                <span>Recaudo del mes</span>
+                <strong>$ 785.430.000</strong>
+                <small>vs. mes anterior <b class="up">▲ 12,4%</b></small>
+              </div>
+            </div>
+            <div class="card metric red">
+              <div class="metric-icon">!</div>
+              <div class="metric-meta">
+                <span>Casos S3</span>
+                <strong>128</strong>
+                <small>vs. mes anterior <b class="down">▲ 15,3%</b></small>
+              </div>
+            </div>
+            <div class="card metric black">
+              <div class="metric-icon">◎</div>
+              <div class="metric-meta">
+                <span>Efectividad</span>
+                <strong>42,7%</strong>
+                <small>vs. mes anterior <b class="up">▲ 5,6 pp</b></small>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid main-2-1">
+            <div class="card">
+              <div class="card-head">
+                <h3>Clientes prioritarios</h3>
+                <div class="actions">
+                  <button class="btn small secondary" data-goto="clientes">Ver todos</button>
+                  <button class="btn small primary" data-modal="quickActionModal">Acción rápida</button>
+                </div>
+              </div>
+              <div class="card-body tight table-wrap">
+                <table class="sortable">
+                  <thead>
+                    <tr>
+                      <th>Cliente</th>
+                      <th>Segmento</th>
+                      <th>Cartera total</th>
+                      <th>Vencido</th>
+                      <th>Días mora</th>
+                      <th>Riesgo</th>
+                      <th>Gestor</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Transportes del Valle S.A.S.</td><td>Empresarial</td><td data-sort="320450000">$ 320.450.000</td><td data-sort="185760000" style="color:#d30f19">$ 185.760.000</td><td data-sort="91">91</td><td><span class="pill red">Alto</span></td><td>Laura Gómez</td><td><button class="btn small secondary" data-goto="expedientes">Ver ficha</button></td>
+                    </tr>
+                    <tr>
+                      <td>Logística Andina Ltda.</td><td>Empresarial</td><td data-sort="265330000">$ 265.330.000</td><td data-sort="132480000" style="color:#d30f19">$ 132.480.000</td><td data-sort="61">61</td><td><span class="pill red">Alto</span></td><td>Carlos Ruiz</td><td><button class="btn small secondary" data-goto="cartera">Gestionar</button></td>
+                    </tr>
+                    <tr>
+                      <td>Constructora Horizonte</td><td>Empresarial</td><td data-sort="198730000">$ 198.730.000</td><td data-sort="98340000" style="color:#d30f19">$ 98.340.000</td><td data-sort="46">46</td><td><span class="pill amber">Medio</span></td><td>Laura Gómez</td><td><button class="btn small secondary" data-goto="clientes">Ver</button></td>
+                    </tr>
+                    <tr>
+                      <td>Autopartes del Norte</td><td>PYME</td><td data-sort="138640000">$ 138.640.000</td><td data-sort="64120000" style="color:#d30f19">$ 64.120.000</td><td data-sort="31">31</td><td><span class="pill amber">Medio</span></td><td>Andrés M.</td><td><button class="btn small secondary" data-goto="pagos">Pagos</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="grid">
+              <div class="card">
+                <div class="card-head"><h3>Actividad reciente</h3></div>
+                <div class="card-body stack">
+                  <div class="mini-item">
+                    <div><strong>Pago registrado</strong><br><span class="muted">Transportes del Valle S.A.S. · Hace 15 min</span></div>
+                    <strong class="up">$ 12.450.000</strong>
+                  </div>
+                  <div class="mini-item">
+                    <div><strong>Promesa de pago creada</strong><br><span class="muted">Logística Andina Ltda. · Hace 1 hora</span></div>
+                    <strong>$ 8.500.000</strong>
+                  </div>
+                  <div class="mini-item">
+                    <div><strong>Caso S3 actualizado</strong><br><span class="muted">Constructora Horizonte · Hace 2 horas</span></div>
+                    <button class="btn small secondary" data-goto="expedientes">Abrir</button>
+                  </div>
+                  <div class="mini-item">
+                    <div><strong>Campaña ejecutada</strong><br><span class="muted">Recordatorio de pago · Mayo</span></div>
+                    <button class="btn small secondary" data-goto="campanas">Ver</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-head"><h3>Segmentos rápidos</h3></div>
+                <div class="card-body">
+                  <div class="grid cols-2">
+                    <div class="box"><strong>S3 con pagaré</strong><span class="muted">19 casos</span></div>
+                    <div class="box"><strong>Sin teléfono válido</strong><span class="muted">43 clientes</span></div>
+                    <div class="box"><strong>Promesas para hoy</strong><span class="muted">12 seguimientos</span></div>
+                    <div class="box"><strong>Pagos por validar</strong><span class="muted">7 comprobantes</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CLIENTES -->
+        <section class="page" id="page-clientes">
+          <div class="page-head">
+            <div>
+              <h1>Bandeja de clientes</h1>
+              <p>Consulta y gestión centralizada de clientes de cartera.</p>
+            </div>
+            <div class="actions">
+              <button class="btn secondary" data-modal="importModal">Importar Excel</button>
+              <button class="btn secondary" data-modal="exportModal">Exportar</button>
+              <button class="btn primary" data-modal="newClientModal">Nuevo cliente</button>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-body">
+              <div class="grid cols-5">
+                <div class="box"><strong>Nivel de riesgo</strong><span class="muted">Todos · S1 · S2 · S3</span></div>
+                <div class="box"><strong>Estado de deuda</strong><span class="muted">Todos</span></div>
+                <div class="box"><strong>Antigüedad</strong><span class="muted">Todos</span></div>
+                <div class="box"><strong>Contacto disponible</strong><span class="muted">Todos</span></div>
+                <div class="box"><strong>Soporte jurídico</strong><span class="muted">Todos</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid cols-4" style="margin-bottom:16px;">
+            <div class="card metric black"><div class="metric-icon">👥</div><div class="metric-meta"><span>Total clientes</span><strong>1.256</strong><small>Base consolidada</small></div></div>
+            <div class="card metric red"><div class="metric-icon">$</div><div class="metric-meta"><span>Saldo total cartera</span><strong>$ 3.285.650.000</strong><small>Activa + vencida</small></div></div>
+            <div class="card metric amber"><div class="metric-icon">☎</div><div class="metric-meta"><span>Clientes sin contacto</span><strong>213</strong><small>16,9%</small></div></div>
+            <div class="card metric purple"><div class="metric-icon">⚖</div><div class="metric-meta"><span>Con soporte jurídico</span><strong>412</strong><small>32,8%</small></div></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <h3>Listado de clientes</h3>
+              <div class="actions">
+                <input id="clientFilter" type="text" placeholder="Filtrar cliente..." style="border:1px solid var(--line);border-radius:12px;padding:10px 12px;">
+                <small>Haz clic en los encabezados para ordenar</small>
+              </div>
+            </div>
+            <div class="card-body tight table-wrap">
+              <table id="clientsTable" class="sortable">
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Documento</th>
+                    <th>Contacto</th>
+                    <th>Saldo total</th>
+                    <th>Último abono</th>
+                    <th>Riesgo</th>
+                    <th>Documentos</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Transportes del Valle S.A.S.</td><td>NIT 900.123.456-7</td><td>310 123 4567</td><td data-sort="165760000" style="color:#d30f19">$ 165.760.000</td><td>15/05/2024</td><td><span class="pill red">S3</span></td><td>12</td><td><button class="btn small secondary" data-goto="expedientes">Ver ficha</button></td></tr>
+                  <tr><td>Logística Andina Ltda.</td><td>NIT 830.456.789-1</td><td>320 987 6543</td><td data-sort="132480000" style="color:#d30f19">$ 132.480.000</td><td>02/05/2024</td><td><span class="pill red">S3</span></td><td>9</td><td><button class="btn small secondary" data-goto="cartera">Gestionar</button></td></tr>
+                  <tr><td>Constructora Horizonte</td><td>NIT 901.234.567-8</td><td>315 654 3210</td><td data-sort="93340000" style="color:#d30f19">$ 93.340.000</td><td>18/04/2024</td><td><span class="pill amber">S2</span></td><td>8</td><td><button class="btn small secondary" data-goto="expedientes">Abrir</button></td></tr>
+                  <tr><td>Distribuciones La 45 S.A.S.</td><td>NIT 900.654.321-0</td><td>300 111 2233</td><td data-sort="72890000" style="color:#d30f19">$ 72.890.000</td><td>10/05/2024</td><td><span class="pill red">S3</span></td><td>6</td><td><button class="btn small secondary" data-goto="campanas">Campaña</button></td></tr>
+                  <tr><td>Autopartes del Norte</td><td>NIT 901.876.543-2</td><td>321 222 3344</td><td data-sort="64120000" style="color:#d30f19">$ 64.120.000</td><td>25/04/2024</td><td><span class="pill amber">S2</span></td><td>7</td><td><button class="btn small secondary" data-goto="pagos">Pagos</button></td></tr>
+                  <tr><td>Talleres Megauto S.A.S.</td><td>NIT 900.321.654-9</td><td>318 555 6677</td><td data-sort="48560000">$ 48.560.000</td><td>05/04/2024</td><td><span class="pill green">S1</span></td><td>5</td><td><button class="btn small secondary">Ver</button></td></tr>
+                  <tr><td>Comercializadora El Camino</td><td>NIT 900.987.654-4</td><td>317 888 9900</td><td data-sort="36940000">$ 36.940.000</td><td>20/03/2024</td><td><span class="pill green">S1</span></td><td>4</td><td><button class="btn small secondary">Ver</button></td></tr>
+                  <tr><td>Industrias del Valle S.A.</td><td>NIT 890.123.456-1</td><td>316 777 8899</td><td data-sort="18430000">$ 18.430.000</td><td>01/03/2024</td><td><span class="pill green">S1</span></td><td>2</td><td><button class="btn small secondary">Ver</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- CARTERA -->
+        <section class="page" id="page-cartera">
+          <div class="page-head">
+            <div>
+              <h1>Gestión de Cartera</h1>
+              <p>Controla el envejecimiento, las promesas y la estrategia de recuperación.</p>
+            </div>
+            <div class="actions">
+              <button class="btn secondary" data-modal="exportModal">Exportar reporte</button>
+              <button class="btn primary" data-goto="reportes">Ver analítica</button>
+            </div>
+          </div>
+
+          <div class="grid cols-5" style="margin-bottom:16px;">
+            <div class="card metric red"><div class="metric-icon">💼</div><div class="metric-meta"><span>Cartera total</span><strong>$ 3.285.650.000</strong><small><b class="down">▲ 4,68%</b></small></div></div>
+            <div class="card metric black"><div class="metric-icon">🗓</div><div class="metric-meta"><span>Saldo vencido</span><strong>$ 1.245.860.000</strong><small><b class="down">▲ 7,25%</b></small></div></div>
+            <div class="card metric red"><div class="metric-icon">🤝</div><div class="metric-meta"><span>Promesas activas</span><strong>187</strong><small><b class="up">▼ 3,63%</b></small></div></div>
+            <div class="card metric black"><div class="metric-icon">⚖</div><div class="metric-meta"><span>Casos jurídicos</span><strong>62</strong><small><b class="up">▼ 5,08%</b></small></div></div>
+            <div class="card metric red"><div class="metric-icon">◎</div><div class="metric-meta"><span>Recuperación del mes</span><strong>$ 785.430.000</strong><small><b class="up">▲ 12,4%</b></small></div></div>
+          </div>
+
+          <div class="grid main-2-1" style="margin-bottom:16px;">
+            <div class="card">
+              <div class="card-head"><h3>Análisis de antigüedad de cartera</h3></div>
+              <div class="card-body">
+                <div class="split">
+                  <div class="stack">
+                    <div class="mini-item"><div><span class="pill green">Al día</span></div><div>$ 1.240.890.000 · 37,8%</div></div>
+                    <div class="mini-item"><div><span class="pill amber">1 a 30 días</span></div><div>$ 642.310.000 · 19,6%</div></div>
+                    <div class="mini-item"><div><span class="pill amber">31 a 60 días</span></div><div>$ 518.260.000 · 15,8%</div></div>
+                    <div class="mini-item"><div><span class="pill red">61 a 90 días</span></div><div>$ 402.150.000 · 12,2%</div></div>
+                    <div class="mini-item"><div><span class="pill red">+90 días</span></div><div>$ 482.040.000 · 14,6%</div></div>
+                  </div>
+                  <div>
+                    <div class="donut" style="background:conic-gradient(#4ea359 0 38%, #f2a100 38% 58%, #ff7c1f 58% 74%, #e94a54 74% 86%, #c00d16 86% 100%);" data-label="$ 3.285\A Millones\A Total cartera"></div>
+                  </div>
+                </div>
+                <div class="legend" style="margin-top:14px;">
+                  <span><i style="background:#4ea359"></i>Al día</span>
+                  <span><i style="background:#f2a100"></i>1 a 30</span>
+                  <span><i style="background:#ff7c1f"></i>31 a 60</span>
+                  <span><i style="background:#e94a54"></i>61 a 90</span>
+                  <span><i style="background:#c00d16"></i>+90</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid">
+              <div class="card">
+                <div class="card-head"><h3>Alertas de cartera</h3></div>
+                <div class="card-body stack">
+                  <div class="mini-item"><div><strong>Alta concentración en +90 días</strong><br><span class="muted">14,6% de la cartera está en riesgo alto.</span></div><strong class="down">$ 482.040.000</strong></div>
+                  <div class="mini-item"><div><strong>Promesas próximas a vencer</strong><br><span class="muted">27 promesas vencen en 5 días.</span></div><strong>27</strong></div>
+                  <div class="mini-item"><div><strong>Clientes sin pago reciente</strong><br><span class="muted">532 clientes sin pago en 15 días.</span></div><strong>532</strong></div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-head"><h3>Tareas del gestor</h3></div>
+                <div class="card-body stack">
+                  <div class="mini-item"><div>Contactar clientes prioritarios</div><strong class="down">18</strong></div>
+                  <div class="mini-item"><div>Actualizar promesas</div><strong>27</strong></div>
+                  <div class="mini-item"><div>Seguimiento de pagos</div><strong class="up">34</strong></div>
+                  <div class="mini-item"><div>Preparar casos jurídicos</div><strong>12</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-head">
+              <h3>Gestión prioritaria de cartera</h3>
+              <div class="actions">
+                <button class="btn small secondary">Todos los asesores</button>
+                <button class="btn small secondary">Filtros</button>
+              </div>
+            </div>
+            <div class="card-body tight table-wrap">
+              <table class="sortable">
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Segmento</th>
+                    <th>Saldo total</th>
+                    <th>Vencido</th>
+                    <th>Días mora</th>
+                    <th>Prioridad</th>
+                    <th>Asesor</th>
+                    <th>Próxima acción</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Transportes del Valle S.A.S.</td><td>Empresarial</td><td data-sort="320450000">$ 320.450.000</td><td data-sort="165760000" style="color:#d30f19">$ 165.760.000</td><td data-sort="91">91</td><td><span class="pill red">Alta</span></td><td>Laura Gómez</td><td>Llamada - 24/05/2024</td><td><button class="btn small secondary" data-goto="expedientes">Ver ficha</button></td></tr>
+                  <tr><td>Logística Andina Ltda.</td><td>Empresarial</td><td data-sort="265330000">$ 265.330.000</td><td data-sort="132480000" style="color:#d30f19">$ 132.480.000</td><td data-sort="61">61</td><td><span class="pill red">Alta</span></td><td>Carlos Ruiz</td><td>Visita - 24/05/2024</td><td><button class="btn small secondary" data-goto="pagos">Ver pagos</button></td></tr>
+                  <tr><td>Constructora Horizonte</td><td>Empresarial</td><td data-sort="198730000">$ 198.730.000</td><td data-sort="98340000" style="color:#d30f19">$ 98.340.000</td><td data-sort="46">46</td><td><span class="pill amber">Media</span></td><td>Laura Gómez</td><td>Correo - 24/05/2024</td><td><button class="btn small secondary" data-goto="campanas">Notificar</button></td></tr>
+                  <tr><td>Autopartes del Norte</td><td>PYME</td><td data-sort="138640000">$ 138.640.000</td><td data-sort="64120000" style="color:#d30f19">$ 64.120.000</td><td data-sort="32">32</td><td><span class="pill amber">Media</span></td><td>Carlos Ruiz</td><td>Mensaje - 24/05/2024</td><td><button class="btn small secondary" data-goto="pagos">Cobro</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="grid cols-3">
+            <div class="card">
+              <div class="card-head"><h3>Distribución por segmento</h3></div>
+              <div class="card-body">
+                <div class="donut" style="background:conic-gradient(var(--red) 0 56%, #111318 56% 87%, var(--amber) 87% 96%, #b8bdc7 96% 100%);" data-label="$ 3.285\A Millones\A Total cartera"></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3>Flujo de recuperación</h3><button class="btn small secondary">Últimos 6 meses</button></div>
+              <div class="card-body">
+                <div class="chart-panel">
+                  <svg viewBox="0 0 600 190" preserveAspectRatio="none">
+                    <polyline fill="none" stroke="#e10914" stroke-width="4" points="30,145 120,128 220,112 320,98 420,92 530,74"/>
+                    <circle cx="30" cy="145" r="4" fill="#e10914"/>
+                    <circle cx="120" cy="128" r="4" fill="#e10914"/>
+                    <circle cx="220" cy="112" r="4" fill="#e10914"/>
+                    <circle cx="320" cy="98" r="4" fill="#e10914"/>
+                    <circle cx="420" cy="92" r="4" fill="#e10914"/>
+                    <circle cx="530" cy="74" r="5" fill="#e10914"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3>Casos con soporte jurídico</h3></div>
+              <div class="card-body stack">
+                <div class="mini-item"><div><strong style="font-size:32px">62</strong><br><span class="muted">Casos activos</span></div><span style="font-size:34px">⚖</span></div>
+                <div class="mini-item"><div>En prejurídico</div><strong>24</strong></div>
+                <div class="mini-item"><div>En jurídico</div><strong>28</strong></div>
+                <div class="mini-item"><div>En cobro coactivo</div><strong>10</strong></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- EXPEDIENTES -->
+        <section class="page" id="page-expedientes">
+          <div class="page-head">
+            <div>
+              <h1>Ficha integral del cliente</h1>
+              <p>Vista consolidada de datos, soportes, obligaciones y gestiones.</p>
+            </div>
+            <div class="actions">
+              <button class="btn secondary" data-modal="editClientModal">Editar cliente</button>
+              <button class="btn primary" data-goto="pagos">Ir a pagos</button>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-body">
+              <div class="grid cols-4">
+                <div class="box"><strong>Laura Gómez</strong><span class="muted">C.C. 1.098.765.432 · Promesa incumplida</span></div>
+                <div class="box"><strong>Riesgo S3</strong><span class="muted">Nivel ALTO</span></div>
+                <div class="box"><strong>Estado expediente</strong><span class="muted">En gestión activa</span></div>
+                <div class="box"><strong>Última actualización</strong><span class="muted">15/05/2024 09:15 a.m.</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-head">
+              <h3>Vista detallada</h3>
+              <div class="actions">
+                <button class="btn small secondary tab-btn active" data-tab-group="expedienteTabs" data-tab="datos">Datos</button>
+                <button class="btn small secondary tab-btn" data-tab-group="expedienteTabs" data-tab="obligaciones">Obligaciones</button>
+                <button class="btn small secondary tab-btn" data-tab-group="expedienteTabs" data-tab="documentos">Documentos</button>
+                <button class="btn small secondary tab-btn" data-tab-group="expedienteTabs" data-tab="gestiones">Gestiones</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="tab-panel active" data-tab-panel="expedienteTabs" data-tab="datos">
+                <div class="grid main-3">
+                  <div class="card">
+                    <div class="card-head"><h3>Datos principales</h3></div>
+                    <div class="card-body stack">
+                      <div class="mini-item"><div>Tipo de persona</div><strong>Natural</strong></div>
+                      <div class="mini-item"><div>Dirección</div><strong>Cra. 15 #45 - 23</strong></div>
+                      <div class="mini-item"><div>Ciudad</div><strong>Bucaramanga</strong></div>
+                      <div class="mini-item"><div>Ingresos mensuales</div><strong>$ 2.200.000</strong></div>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card-head"><h3>Contactos</h3></div>
+                    <div class="card-body stack">
+                      <div class="mini-item"><div>Teléfono móvil</div><strong>316 555 2233</strong></div>
+                      <div class="mini-item"><div>Teléfono fijo</div><strong>(607) 643 2211</strong></div>
+                      <div class="mini-item"><div>Correo electrónico</div><strong>laura.gomez@email.com</strong></div>
+                      <div class="mini-item"><div>Contacto alterno</div><strong>María Gómez · 317 444 9988</strong></div>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card-head"><h3>Acción sugerida</h3></div>
+                    <div class="card-body stack">
+                      <div class="mini-item"><div>Saldo total</div><strong style="color:#d30f19">$ 12.450.000</strong></div>
+                      <div class="mini-item"><div>Ubicación física</div><strong>Archivador 3 · Carpeta 45</strong></div>
+                      <div class="mini-item"><div>Próxima acción</div><strong>Llamada de seguimiento</strong></div>
+                      <button class="btn primary" data-goto="cartera">Registrar gestión</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-panel" data-tab-panel="expedienteTabs" data-tab="obligaciones">
+                <div class="table-wrap">
+                  <table class="sortable">
+                    <thead><tr><th>Obligación</th><th>Tipo</th><th>Monto total</th><th>Saldo actual</th><th>Días mora</th><th>Estado</th></tr></thead>
+                    <tbody>
+                      <tr><td>OBL-2024-00123</td><td>Pagaré</td><td data-sort="8500000">$ 8.500.000</td><td data-sort="6350000">$ 6.350.000</td><td data-sort="61">61</td><td><span class="pill red">Vencida</span></td></tr>
+                      <tr><td>OBL-2024-00124</td><td>Leasing</td><td data-sort="3200000">$ 3.200.000</td><td data-sort="1800000">$ 1.800.000</td><td data-sort="15">15</td><td><span class="pill amber">Por vencer</span></td></tr>
+                      <tr><td>OBL-2024-00125</td><td>Compra de llantas</td><td data-sort="1250000">$ 1.250.000</td><td data-sort="1250000">$ 1.250.000</td><td data-sort="92">92</td><td><span class="pill red">Vencida</span></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="tab-panel" data-tab-panel="expedienteTabs" data-tab="documentos">
+                <div class="grid cols-4">
+                  <div class="box"><strong>Pagaré</strong><span class="muted">PAG-2024-00123.pdf · 2.4 MB</span></div>
+                  <div class="box"><strong>Letra de cambio</strong><span class="muted">LET-2024-00124.pdf · 1.8 MB</span></div>
+                  <div class="box"><strong>Autorización habeas data</strong><span class="muted">HBD-2024-00123.pdf · 1.1 MB</span></div>
+                  <div class="box"><strong>Solicitud de crédito</strong><span class="muted">SOL-2024-00123.pdf · 2.0 MB</span></div>
+                </div>
+              </div>
+
+              <div class="tab-panel" data-tab-panel="expedienteTabs" data-tab="gestiones">
+                <div class="stack">
+                  <div class="insight"><div class="dot">☎</div><div><strong>15/05/2024 · 09:15 a.m.</strong><br><span class="muted">Se contacta a la cliente, no responde. Se deja mensaje.</span></div></div>
+                  <div class="insight"><div class="dot">✉</div><div><strong>13/05/2024 · 04:22 p.m.</strong><br><span class="muted">Se envía recordatorio de pago y opción de acuerdo.</span></div></div>
+                  <div class="insight"><div class="dot">!</div><div><strong>10/05/2024 · 11:00 a.m.</strong><br><span class="muted">La cliente no realizó el pago acordado.</span></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CAMPAÑAS -->
+        <section class="page" id="page-campanas">
+          <div class="page-head">
+            <div>
+              <h1>Campañas y Automatización</h1>
+              <p>Crea, segmenta y ejecuta campañas para mejorar tu recaudo.</p>
+            </div>
+            <div class="actions">
+              <button class="btn secondary" data-modal="campaignModal">Guardar borrador</button>
+              <button class="btn primary" data-modal="campaignModal">Programar y enviar</button>
+            </div>
+          </div>
+
+          <div class="grid main-2-1" style="margin-bottom:16px;">
+            <div class="grid cols-2">
+              <div class="card">
+                <div class="card-head"><h3>Constructor de segmento</h3><small>1.247 clientes</small></div>
+                <div class="card-body">
+                  <div class="grid cols-2">
+                    <div class="box"><strong>Riesgo S3</strong><span class="muted">alto</span></div>
+                    <div class="box"><strong>Con pagaré</strong><span class="muted">sí</span></div>
+                    <div class="box"><strong>Último abono > 60 días</strong><span class="muted">activo</span></div>
+                    <div class="box"><strong>Sin pago reciente</strong><span class="muted">7 días</span></div>
+                    <div class="box"><strong>Con teléfono válido</strong><span class="muted">sí</span></div>
+                    <div class="box"><strong>Enlace abierto sin pagar</strong><span class="muted">sí</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-head"><h3>Editor de mensaje</h3><button class="btn small secondary">Insertar campo</button></div>
+                <div class="card-body">
+                  <div class="box" style="margin-bottom:12px;">Campos disponibles: {nombre}, {monto}, {dias_mora}, {enlace_pago}, {fecha_limite}</div>
+                  <div class="box" style="min-height:210px; line-height:1.65;">
+                    Hola &#123;nombre&#125;,<br><br>
+                    Te recordamos que tienes un saldo pendiente de &#123;monto&#125;, con &#123;dias_mora&#125; días de mora.<br><br>
+                    Ponte al día aquí:<br>
+                    👉 &#123;enlace_pago&#125;<br><br>
+                    Válido hasta &#123;fecha_limite&#125;.<br><br>
+                    ¡Gracias por confiar en Servillantas El Puente!
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid">
+              <div class="card">
+                <div class="card-head"><h3>Alertas y recomendaciones</h3></div>
+                <div class="card-body stack">
+                  <div class="mini-item"><div><strong>Alta concentración en riesgo S3</strong><br><span class="muted">El 28% de tu cartera está en riesgo alto.</span></div></div>
+                  <div class="mini-item"><div><strong>Clientes sin pago reciente</strong><br><span class="muted">532 clientes no han pagado en 15 días.</span></div></div>
+                  <div class="mini-item"><div><strong>Enlaces abiertos sin pago</strong><br><span class="muted">187 enlaces abiertos sin registrar pago.</span></div></div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-head"><h3>Resumen de la campaña</h3></div>
+                <div class="card-body stack">
+                  <div class="mini-item"><div>Nombre</div><strong>Recordatorio de pago - Mayo 2024</strong></div>
+                  <div class="mini-item"><div>Segmento</div><strong>Riesgo S3 + 5 filtros</strong></div>
+                  <div class="mini-item"><div>Estado</div><span class="pill green">Activa</span></div>
+                  <div class="mini-item"><div>Próximo envío</div><strong>31/05/2024 10:00 AM</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3>Resultados de campaña</h3></div>
+            <div class="card-body">
+              <div class="grid cols-5" style="margin-bottom:16px;">
+                <div class="box"><strong>Enviados</strong><div style="font-size:26px;font-weight:800;color:var(--blue);margin-top:8px;">1.247</div></div>
+                <div class="box"><strong>Abiertos</strong><div style="font-size:26px;font-weight:800;color:var(--green);margin-top:8px;">498</div></div>
+                <div class="box"><strong>Clics</strong><div style="font-size:26px;font-weight:800;color:var(--amber);margin-top:8px;">187</div></div>
+                <div class="box"><strong>Pagos</strong><div style="font-size:26px;font-weight:800;color:var(--red);margin-top:8px;">62</div></div>
+                <div class="box"><strong>Recaudado</strong><div style="font-size:26px;font-weight:800;color:var(--green);margin-top:8px;">$ 32.450.000</div></div>
+              </div>
+
+              <div class="table-wrap">
+                <table class="sortable">
+                  <thead><tr><th>Cliente</th><th>Teléfono</th><th>Enviado</th><th>Abierto</th><th>Clic</th><th>Pago</th><th>Monto pagado</th><th>Estado</th></tr></thead>
+                  <tbody>
+                    <tr><td>Transportes del Valle S.A.S.</td><td>300 123 4567</td><td>24/05/2024 10:01</td><td>24/05/2024 10:15</td><td>24/05/2024 10:16</td><td>24/05/2024 10:20</td><td data-sort="1250000">$ 1.250.000</td><td><span class="pill green">Pagado</span></td></tr>
+                    <tr><td>Logística Andina Ltda.</td><td>310 987 6543</td><td>24/05/2024 10:01</td><td>24/05/2024 10:18</td><td>-</td><td>-</td><td data-sort="0">$ 0</td><td><span class="pill amber">Pendiente</span></td></tr>
+                    <tr><td>Constructora Horizonte</td><td>313 555 8899</td><td>24/05/2024 10:02</td><td>24/05/2024 10:22</td><td>24/05/2024 10:23</td><td>-</td><td data-sort="0">$ 0</td><td><span class="pill gray">No pagó</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PAGOS -->
+        <section class="page" id="page-pagos">
+          <div class="page-head">
+            <div>
+              <h1>Pagos y Recaudo</h1>
+              <p>Valida, concilia y monitorea todos los pagos recibidos en la operación.</p>
+            </div>
+            <div class="actions">
+              <button class="btn secondary" data-modal="reconcileModal">Conciliar</button>
+              <button class="btn primary" data-modal="paymentModal">Registrar pago</button>
+            </div>
+          </div>
+
+          <div class="grid cols-5" style="margin-bottom:16px;">
+            <div class="card metric green"><div class="metric-icon">💳</div><div class="metric-meta"><span>Pagos recibidos hoy</span><strong>$ 86.740.000</strong><small>28 transacciones · <b class="up">▲ 18,6%</b></small></div></div>
+            <div class="card metric blue"><div class="metric-icon">↗</div><div class="metric-meta"><span>Recaudo del mes</span><strong>$ 785.430.000</strong><small><b class="up">▲ 12,4%</b></small></div></div>
+            <div class="card metric amber"><div class="metric-icon">⌛</div><div class="metric-meta"><span>Pendientes por validar</span><strong>18</strong><small>por $ 24.680.000</small></div></div>
+            <div class="card metric purple"><div class="metric-icon">🔗</div><div class="metric-meta"><span>Links de pago activos</span><strong>52</strong><small>por $ 132.480.000</small></div></div>
+            <div class="card metric red"><div class="metric-icon">◔</div><div class="metric-meta"><span>Abonos parciales</span><strong>34</strong><small>por $ 93.340.000</small></div></div>
+          </div>
+
+          <div class="grid main-2-1">
+            <div class="grid">
+              <div class="card">
+                <div class="card-head">
+                  <h3>Transacciones recientes</h3>
+                  <div class="actions">
+                    <button class="btn small secondary">Filtros</button>
+                    <button class="btn small secondary" data-modal="exportModal">Exportar</button>
+                  </div>
+                </div>
+                <div class="card-body tight table-wrap">
+                  <table class="sortable">
+                    <thead><tr><th>Fecha</th><th>Cliente</th><th>Canal</th><th>Referencia</th><th>Monto</th><th>Estado</th><th>Comprobante</th><th>Acciones</th></tr></thead>
+                    <tbody>
+                      <tr><td>24/05/2024 10:30</td><td>Transportes del Valle S.A.S.</td><td>PSE</td><td>PSE-987654</td><td data-sort="1250000">$ 1.250.000</td><td><span class="pill green">Aprobado</span></td><td>comprobante_987.pdf</td><td><button class="btn small secondary" data-goto="deudor">Ver portal</button></td></tr>
+                      <tr><td>24/05/2024 09:15</td><td>Logística Andina Ltda.</td><td>Nequi</td><td>Nequi-3124567890</td><td data-sort="350000">$ 350.000</td><td><span class="pill amber">En validación</span></td><td>comprobante_986.jpg</td><td><button class="btn small secondary">Abrir</button></td></tr>
+                      <tr><td>24/05/2024 08:40</td><td>Constructora Horizonte</td><td>Transferencia</td><td>TRF-Bancolombia</td><td data-sort="5700000">$ 5.700.000</td><td><span class="pill green">Aprobado</span></td><td>comprobante_985.pdf</td><td><button class="btn small secondary">Abrir</button></td></tr>
+                      <tr><td>24/05/2024 07:12</td><td>Autopartes del Norte</td><td>PSE</td><td>PSE-986531</td><td data-sort="780000">$ 780.000</td><td><span class="pill red">Rechazado</span></td><td>error_983.pdf</td><td><button class="btn small secondary">Abrir</button></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="grid cols-2">
+                <div class="card">
+                  <div class="card-head"><h3>Conciliación bancaria</h3><button class="btn small secondary" data-modal="reconcileModal">Actualizar</button></div>
+                  <div class="card-body tight table-wrap">
+                    <table class="sortable">
+                      <thead><tr><th>Cuenta</th><th>Saldo banco</th><th>Recaudo registrado</th><th>Diferencia</th><th>Estado</th></tr></thead>
+                      <tbody>
+                        <tr><td>Bancolombia Ahorros 1234</td><td data-sort="420350000">$ 420.350.000</td><td data-sort="419350000">$ 419.350.000</td><td data-sort="1000000">$ 1.000.000</td><td><span class="pill amber">Diferencia</span></td></tr>
+                        <tr><td>Davivienda Corriente 5678</td><td data-sort="215780000">$ 215.780.000</td><td data-sort="215780000">$ 215.780.000</td><td data-sort="0">$ 0</td><td><span class="pill green">Conciliado</span></td></tr>
+                        <tr><td>BBVA Ahorros 9012</td><td data-sort="149650000">$ 149.650.000</td><td data-sort="149000000">$ 149.000.000</td><td data-sort="650000">$ 650.000</td><td><span class="pill amber">Diferencia</span></td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="card">
+                  <div class="card-head"><h3>Links de pago generados</h3><button class="btn small secondary" data-modal="linkModal">Crear link</button></div>
+                  <div class="card-body stack">
+                    <div class="mini-item"><div>LP-000052 · Transportes del Valle</div><span class="pill gray">Pendiente</span></div>
+                    <div class="mini-item"><div>LP-000051 · Logística Andina</div><span class="pill green">Pagado</span></div>
+                    <div class="mini-item"><div>LP-000048 · Autopartes del Norte</div><span class="pill red">Vencido</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid">
+              <div class="card">
+                <div class="card-head"><h3>Resumen de medios de pago</h3></div>
+                <div class="card-body">
+                  <div class="donut" style="background:conic-gradient(#123f76 0 45%, var(--amber) 45% 76%, var(--purple) 76% 89%, #a1a1a8 89% 100%);" data-label="Total\A $ 785,4 M"></div>
+                  <div class="stack" style="margin-top:16px;">
+                    <div class="mini-item"><div>PSE</div><strong>$ 356.450.000</strong></div>
+                    <div class="mini-item"><div>Transferencia</div><strong>$ 248.160.000</strong></div>
+                    <div class="mini-item"><div>Nequi</div><strong>$ 98.430.000</strong></div>
+                    <div class="mini-item"><div>Tarjeta</div><strong>$ 69.850.000</strong></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-head"><h3>Validaciones pendientes</h3></div>
+                <div class="card-body stack">
+                  <div class="mini-item"><div>Pagos por validar</div><strong>12</strong></div>
+                  <div class="mini-item"><div>Comprobantes por revisar</div><strong>4</strong></div>
+                  <div class="mini-item"><div>Transferencias sin soporte</div><strong>2</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- REPORTES -->
+        <section class="page" id="page-reportes">
+          <div class="page-head">
+            <div>
+              <h1>Reportes y Analítica</h1>
+              <p>Mide la cartera, recaudo, efectividad y desempeño operativo para tomar mejores decisiones.</p>
+            </div>
+            <div class="actions">
+              <button class="btn secondary" data-modal="exportModal">Guardar vista</button>
+              <button class="btn primary" data-modal="exportModal">Exportar reporte</button>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-body">
+              <div class="grid cols-5">
+                <div class="box"><strong>Rango de fechas</strong><span class="muted">01/05/2024 - 31/05/2024</span></div>
+                <div class="box"><strong>Segmento</strong><span class="muted">Todos los segmentos</span></div>
+                <div class="box"><strong>Gestor</strong><span class="muted">Todos los gestores</span></div>
+                <div class="box"><strong>Nivel de riesgo</strong><span class="muted">Todos los niveles</span></div>
+                <div class="box"><strong>Formato</strong><span class="muted">PDF</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid cols-5" style="margin-bottom:16px;">
+            <div class="card metric red"><div class="metric-icon">$</div><div class="metric-meta"><span>Cartera total</span><strong>$ 3.285.650.000</strong><small><b class="down">▲ 4,68%</b></small></div></div>
+            <div class="card metric black"><div class="metric-icon">↗</div><div class="metric-meta"><span>Recaudo acumulado</span><strong>$ 785.430.000</strong><small><b class="up">▲ 12,4%</b></small></div></div>
+            <div class="card metric red"><div class="metric-icon">⟳</div><div class="metric-meta"><span>Tasa de recuperación</span><strong>23,91%</strong><small><b class="up">▲ 5,1 pp</b></small></div></div>
+            <div class="card metric black"><div class="metric-icon">👥</div><div class="metric-meta"><span>Clientes gestionados</span><strong>1.247</strong><small><b class="up">▲ 9,3%</b></small></div></div>
+            <div class="card metric red"><div class="metric-icon">◎</div><div class="metric-meta"><span>Efectividad por canal</span><strong>42,7%</strong><small><b class="up">▲ 5,6 pp</b></small></div></div>
+          </div>
+
+          <div class="grid main-3" style="margin-bottom:16px;">
+            <div class="card">
+              <div class="card-head"><h3>Recaudo mensual</h3></div>
+              <div class="card-body">
+                <div class="legend"><span><i style="background:var(--red)"></i>Recaudo 2024</span><span><i style="background:#a7acb7"></i>Recaudo 2023</span></div>
+                <div class="chart-panel">
+                  <svg viewBox="0 0 600 190" preserveAspectRatio="none">
+                    <polyline fill="none" stroke="#a7acb7" stroke-width="3" points="30,138 90,124 150,106 210,75 270,68 330,98 390,100 450,90 560,63"/>
+                    <polyline fill="none" stroke="#e10914" stroke-width="4" points="30,122 90,108 150,90 210,62 270,50 330,42"/>
+                    <circle cx="330" cy="42" r="6" fill="#e10914"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><h3>Antigüedad de cartera por segmento</h3></div>
+              <div class="card-body stack-bars">
+                <div class="row"><div>Empresarial</div><div class="bar-track"><span class="seg" style="width:24%;background:#4ea359">24%</span><span class="seg" style="width:21%;background:#f3c100">21%</span><span class="seg" style="width:22%;background:#ff8d09">22%</span><span class="seg" style="width:33%;background:#e10914">33%</span></div></div>
+                <div class="row"><div>PYME</div><div class="bar-track"><span class="seg" style="width:20%;background:#4ea359">20%</span><span class="seg" style="width:18%;background:#f3c100">18%</span><span class="seg" style="width:24%;background:#ff8d09">24%</span><span class="seg" style="width:38%;background:#e10914">38%</span></div></div>
+                <div class="row"><div>Comercial</div><div class="bar-track"><span class="seg" style="width:28%;background:#4ea359">28%</span><span class="seg" style="width:22%;background:#f3c100">22%</span><span class="seg" style="width:20%;background:#ff8d09">20%</span><span class="seg" style="width:30%;background:#e10914">30%</span></div></div>
+                <div class="row"><div>Otros</div><div class="bar-track"><span class="seg" style="width:31%;background:#4ea359">31%</span><span class="seg" style="width:20%;background:#f3c100">20%</span><span class="seg" style="width:19%;background:#ff8d09">19%</span><span class="seg" style="width:30%;background:#e10914">30%</span></div></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><h3>Distribución por nivel de riesgo</h3></div>
+              <div class="card-body">
+                <div class="donut" style="background:conic-gradient(#4ea359 0 32%, #f3c100 32% 70%, #ff8d09 70% 94%, #e10914 94% 100%);" data-label="Total\A $ 3.285M"></div>
+                <div class="stack" style="margin-top:16px;">
+                  <div class="mini-item"><div>Riesgo bajo</div><strong>32,0%</strong></div>
+                  <div class="mini-item"><div>Riesgo medio</div><strong>38,3%</strong></div>
+                  <div class="mini-item"><div>Riesgo alto</div><strong>24,0%</strong></div>
+                  <div class="mini-item"><div>Riesgo crítico</div><strong>5,7%</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid main-2-1">
+            <div class="grid cols-2">
+              <div class="card">
+                <div class="card-head"><h3>Conversión del proceso</h3></div>
+                <div class="card-body funnel">
+                  <div class="frow"><div>Contactos realizados</div><div class="fbar"><span style="width:100%"></span></div><strong>100%</strong></div>
+                  <div class="frow"><div>Contactos efectivos</div><div class="fbar"><span style="width:56%"></span></div><strong>56,1%</strong></div>
+                  <div class="frow"><div>Compromisos de pago</div><div class="fbar"><span style="width:22%"></span></div><strong>22,5%</strong></div>
+                  <div class="frow"><div>Pagos realizados</div><div class="fbar"><span style="width:11%"></span></div><strong>11,1%</strong></div>
+                  <div class="mini-item" style="margin-top:12px;"><div>Tasa total</div><strong style="color:var(--red)">11,1%</strong></div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-head"><h3>Top gestores / resultados</h3></div>
+                <div class="card-body tight table-wrap">
+                  <table class="sortable">
+                    <thead><tr><th>Gestor</th><th>Contactos</th><th>Pagos</th><th>Recaudo</th><th>Tasa</th></tr></thead>
+                    <tbody>
+                      <tr><td>Laura Gómez</td><td data-sort="612">612</td><td data-sort="142">142</td><td data-sort="264350000">$ 264.350.000</td><td><span class="pill green">26,8%</span></td></tr>
+                      <tr><td>Carlos Ruiz</td><td data-sort="498">498</td><td data-sort="105">105</td><td data-sort="198760000">$ 198.760.000</td><td><span class="pill green">23,4%</span></td></tr>
+                      <tr><td>Andrés Martínez</td><td data-sort="421">421</td><td data-sort="92">92</td><td data-sort="175320000">$ 175.320.000</td><td><span class="pill green">22,9%</span></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid">
+              <div class="card">
+                <div class="card-head"><h3>Hallazgos clave</h3></div>
+                <div class="card-body">
+                  <div class="insight"><div class="dot">↗</div><div>El recaudo acumulado creció 12,4% vs. el mes anterior.</div></div>
+                  <div class="insight"><div class="dot">!</div><div>La cartera &gt; 90 días representa el 30,95% del total.</div></div>
+                  <div class="insight"><div class="dot">◎</div><div>La tasa de conversión contacto → pago es 11,1%.</div></div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-head"><h3>Comparativo vs periodo anterior</h3></div>
+                <div class="card-body stack">
+                  <div class="mini-item"><div>Recaudo acumulado</div><strong class="up">▲ 12,4%</strong></div>
+                  <div class="mini-item"><div>Tasa de recuperación</div><strong class="up">▲ 5,1 pp</strong></div>
+                  <div class="mini-item"><div>Clientes gestionados</div><strong class="up">▲ 9,3%</strong></div>
+                  <div class="mini-item"><div>Efectividad por canal</div><strong class="up">▲ 5,6 pp</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CONFIGURACION -->
+        <section class="page" id="page-configuracion">
+          <div class="page-head">
+            <div>
+              <h1>Configuración del sistema</h1>
+              <p>Administra usuarios, permisos, plantillas, integraciones y seguridad.</p>
+            </div>
+            <div class="actions">
+              <button class="btn primary" data-modal="settingsSaveModal">Guardar cambios</button>
+            </div>
+          </div>
+
+          <div class="settings-layout">
+            <div class="inner-nav" id="settingsNav">
+              <button class="active" data-tab-group="settings" data-tab="general">General</button>
+              <button data-tab-group="settings" data-tab="usuarios">Usuarios y roles</button>
+              <button data-tab-group="settings" data-tab="politicas">Políticas de cobro</button>
+              <button data-tab-group="settings" data-tab="plantillas">Plantillas</button>
+              <button data-tab-group="settings" data-tab="integraciones">Integraciones</button>
+              <button data-tab-group="settings" data-tab="seguridad">Seguridad</button>
+              <button data-tab-group="settings" data-tab="notificaciones">Notificaciones</button>
+            </div>
+
+            <div class="stack">
+              <div class="tab-panel active" data-tab-panel="settings" data-tab="general">
+                <div class="grid cols-2">
+                  <div class="card">
+                    <div class="card-head"><h3>Perfil de la empresa</h3><button class="btn small secondary" data-modal="companyModal">Editar</button></div>
+                    <div class="card-body stack">
+                      <div class="mini-item"><div>Razón social</div><strong>Servillantas El Puente S.A.S.</strong></div>
+                      <div class="mini-item"><div>NIT</div><strong>900.123.456-7</strong></div>
+                      <div class="mini-item"><div>Dirección</div><strong>Calle 45 #23-67, Bogotá</strong></div>
+                      <div class="mini-item"><div>Contacto</div><strong>(+57) 601 123 4567</strong></div>
+                    </div>
+                  </div>
+
+                  <div class="card">
+                    <div class="card-head"><h3>Marca y personalización</h3><button class="btn small secondary">Editar</button></div>
+                    <div class="card-body stack">
+                      <div class="mini-item"><div>Logo original</div><img src="data:image/jpeg;base64,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" alt="Logo" style="width:56px;border-radius:12px;background:#fff;padding:4px;border:1px solid var(--line);"></div>
+                      <div class="mini-item"><div>Tema principal</div><strong>#E30613</strong></div>
+                      <div class="mini-item"><div>Color secundario</div><strong>#1A1A1A</strong></div>
+                      <div class="mini-item"><div>Vista previa</div><strong>Activa</strong></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-panel" data-tab-panel="settings" data-tab="usuarios">
+                <div class="grid cols-2">
+                  <div class="card">
+                    <div class="card-head"><h3>Usuarios del sistema</h3><button class="btn small primary" data-modal="userModal">Agregar usuario</button></div>
+                    <div class="card-body tight table-wrap">
+                      <table class="sortable">
+                        <thead><tr><th>Usuario</th><th>Nombre</th><th>Rol</th><th>Estado</th></tr></thead>
+                        <tbody>
+                          <tr><td>juan.camilo@...</td><td>Juan Camilo</td><td><span class="pill red">Administrador</span></td><td><span class="pill green">Activo</span></td></tr>
+                          <tr><td>laura.gomez@...</td><td>Laura Gómez</td><td><span class="pill amber">Gestor cartera</span></td><td><span class="pill green">Activo</span></td></tr>
+                          <tr><td>carlos.ruiz@...</td><td>Carlos Ruiz</td><td><span class="pill blue">Analista</span></td><td><span class="pill green">Activo</span></td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <div class="card">
+                    <div class="card-head"><h3>Matriz de permisos</h3></div>
+                    <div class="card-body tight table-wrap">
+                      <table>
+                        <thead><tr><th>Módulo</th><th>Admin</th><th>Gestor</th><th>Analista</th></tr></thead>
+                        <tbody>
+                          <tr><td>Dashboard</td><td>✔</td><td>✔</td><td>✔</td></tr>
+                          <tr><td>Clientes</td><td>✔</td><td>✔</td><td>✔</td></tr>
+                          <tr><td>Cartera</td><td>✔</td><td>✔</td><td>✔</td></tr>
+                          <tr><td>Pagos</td><td>✔</td><td>✔</td><td>✔</td></tr>
+                          <tr><td>Reportes</td><td>✔</td><td>✔</td><td>—</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-panel" data-tab-panel="settings" data-tab="politicas">
+                <div class="card">
+                  <div class="card-head"><h3>Políticas de cobro</h3></div>
+                  <div class="card-body stack">
+                    <div class="mini-item"><div>Recordatorio preventivo</div><strong>5 días antes del vencimiento</strong></div>
+                    <div class="mini-item"><div>Escalamiento S3</div><strong>+60 días de mora</strong></div>
+                    <div class="mini-item"><div>Ruta jurídica</div><strong>+90 días o reincidencia</strong></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-panel" data-tab-panel="settings" data-tab="plantillas">
+                <div class="card">
+                  <div class="card-head"><h3>Plantillas activas</h3><button class="btn small secondary" data-modal="templateModal">Administrar</button></div>
+                  <div class="card-body stack">
+                    <div class="mini-item"><div>Recordatorio pago - 5 días</div><span class="pill green">Activa</span></div>
+                    <div class="mini-item"><div>Recordatorio pago - 15 días</div><span class="pill green">Activa</span></div>
+                    <div class="mini-item"><div>Confirmación de pago</div><span class="pill green">Activa</span></div>
+                    <div class="mini-item"><div>Enlace de pago</div><span class="pill green">Activa</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-panel" data-tab-panel="settings" data-tab="integraciones">
+                <div class="card">
+                  <div class="card-head"><h3>Integraciones de pago y canales</h3></div>
+                  <div class="card-body">
+                    <div class="grid cols-3">
+                      <div class="box"><strong>PSE</strong><span class="muted">Conectado</span><br><br><button class="btn small secondary" data-modal="integrationModal">Probar</button></div>
+                      <div class="box"><strong>Nequi</strong><span class="muted">Conectado</span><br><br><button class="btn small secondary" data-modal="integrationModal">Probar</button></div>
+                      <div class="box"><strong>Email / SMS / WhatsApp</strong><span class="muted">Conectado</span><br><br><button class="btn small secondary" data-modal="integrationModal">Probar</button></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-panel" data-tab-panel="settings" data-tab="seguridad">
+                <div class="card">
+                  <div class="card-head"><h3>Seguridad del sistema</h3></div>
+                  <div class="card-body stack">
+                    <div class="mini-item"><div>Autenticación 2FA</div><span class="pill red">Activa</span></div>
+                    <div class="mini-item"><div>Política de contraseñas</div><strong>Mínimo 8 caracteres</strong></div>
+                    <div class="mini-item"><div>Tiempo de sesión</div><strong>30 min</strong></div>
+                    <div class="mini-item"><div>Registro de auditoría</div><span class="pill red">Activo</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-panel" data-tab-panel="settings" data-tab="notificaciones">
+                <div class="card">
+                  <div class="card-head"><h3>Notificaciones</h3></div>
+                  <div class="card-body stack">
+                    <div class="mini-item"><div>Alertas de cartera</div><span class="pill green">Activas</span></div>
+                    <div class="mini-item"><div>Validaciones de pago</div><span class="pill green">Activas</span></div>
+                    <div class="mini-item"><div>Eventos de seguridad</div><span class="pill amber">Solo admin</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PORTAL -->
+        <section class="page" id="page-deudor">
+          <div class="page-head">
+            <div>
+              <h1>Portal del deudor</h1>
+              <p>Vista externa simplificada para consulta, pago y envío de comprobantes.</p>
+            </div>
+            <div class="actions">
+              <button class="btn secondary" data-goto="pagos">Volver a pagos</button>
+            </div>
+          </div>
+
+          <div class="browser">
+            <div class="browser-top">
+              <div class="lights">
+                <i style="background:#ff5f57"></i>
+                <i style="background:#ffbd2e"></i>
+                <i style="background:#28c840"></i>
+              </div>
+              <div class="address">portal.servillantaselpuente.com/deudor</div>
+            </div>
+            <div style="padding:18px;">
+              <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px;">
+                <img src="data:image/jpeg;base64,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" alt="Logo portal" style="width:86px; border-radius:16px; background:#fff; padding:4px; border:1px solid var(--line);">
+                <div>
+                  <div style="font-size:34px; font-weight:900; letter-spacing:-.03em;">Portal del Deudor</div>
+                  <div class="muted">Consulta tu saldo, realiza pagos y mantente al día.</div>
+                </div>
+              </div>
+
+              <div class="portal-hero">
+                <div>
+                  <div style="color:#d3d7df; font-size:13px; text-transform:uppercase; letter-spacing:.08em;">Tu saldo pendiente</div>
+                  <div style="font-size:46px; font-weight:900; margin:10px 0 8px; color:#fff;">$ 3.285.650</div>
+                  <div style="color:#c1c5cf;">Total a la fecha 24 de mayo de 2024</div>
+                </div>
+                <div>
+                  <div style="font-size:25px; font-weight:800; margin-bottom:8px;">Juan Camilo Rodríguez</div>
+                  <div style="color:#c5c9d2;">C.C. 1.023.456.789</div>
+                  <div style="color:#c5c9d2;">juanrodriguez@email.com</div>
+                  <div style="margin-top:12px;"><span class="pill gray">Cliente desde: ago 2022</span></div>
+                </div>
+                <div>
+                  <div style="color:#d3d7df; font-size:13px; text-transform:uppercase; letter-spacing:.08em;">Días en mora</div>
+                  <div style="font-size:38px; font-weight:900; margin:10px 0 8px;">38 días</div>
+                  <div style="color:#c5c9d2;">Próximo vencimiento: 24 de junio de 2024</div>
+                </div>
+              </div>
+
+              <div class="portal-actions">
+                <div class="action-tile primary"><div><strong>Pagar ahora</strong><br><span style="opacity:.9; font-size:12px;">Liquida tu saldo total</span></div><span>›</span></div>
+                <div class="action-tile"><div><strong>Hacer abono parcial</strong><br><span class="muted" style="font-size:12px;">Realiza un abono</span></div><span>›</span></div>
+                <div class="action-tile"><div><strong>Enviar comprobante</strong><br><span class="muted" style="font-size:12px;">Notifica tu pago</span></div><span>›</span></div>
+                <div class="action-tile"><div><strong>Contactar asesor</strong><br><span class="muted" style="font-size:12px;">Estamos para ayudarte</span></div><span>›</span></div>
+              </div>
+
+              <div class="grid main-2-1">
+                <div class="grid">
+                  <div class="card">
+                    <div class="card-head"><h3>Detalle de tu deuda</h3></div>
+                    <div class="card-body tight table-wrap">
+                      <table>
+                        <thead><tr><th>Concepto</th><th>Fecha</th><th>Vencimiento</th><th>Monto</th><th>Saldo pendiente</th></tr></thead>
+                        <tbody>
+                          <tr><td>Factura de venta N° FV-24578</td><td>24/04/2024</td><td><span class="pill red">Vencido</span></td><td>$ 1.250.000</td><td>$ 1.250.000</td></tr>
+                          <tr><td>Factura de venta N° FV-24615</td><td>08/05/2024</td><td><span class="pill amber">Por vencer</span></td><td>$ 985.650</td><td>$ 985.650</td></tr>
+                          <tr><td>Servicio de alineación y balanceo</td><td>15/05/2024</td><td><span class="pill amber">Por vencer</span></td><td>$ 350.000</td><td>$ 350.000</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <div class="card">
+                    <div class="card-head"><h3>Historial de pagos y abonos</h3></div>
+                    <div class="card-body tight table-wrap">
+                      <table>
+                        <thead><tr><th>Fecha</th><th>Tipo</th><th>Referencia</th><th>Monto</th><th>Estado</th></tr></thead>
+                        <tbody>
+                          <tr><td>10/05/2024</td><td>Pago</td><td>PSE - 987654</td><td>$ 800.000</td><td><span class="pill green">Aprobado</span></td></tr>
+                          <tr><td>25/04/2024</td><td>Abono</td><td>Nequi - 3124567890</td><td>$ 300.000</td><td><span class="pill green">Aprobado</span></td></tr>
+                          <tr><td>05/04/2024</td><td>Pago</td><td>Tarjeta - **** 4242</td><td>$ 1.200.000</td><td><span class="pill green">Aprobado</span></td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="grid">
+                  <div class="card">
+                    <div class="card-head"><h3>Medios de pago disponibles</h3></div>
+                    <div class="card-body stack">
+                      <div class="mini-item"><div>PSE</div><strong>Pago seguro en línea</strong></div>
+                      <div class="mini-item"><div>Nequi</div><strong>Desde la app o web</strong></div>
+                      <div class="mini-item"><div>Tarjeta</div><strong>Crédito o débito</strong></div>
+                      <div class="mini-item"><div>Débito bancario</div><strong>Desde tu cuenta</strong></div>
+                    </div>
+                  </div>
+
+                  <div class="card">
+                    <div class="card-head"><h3>Consejos para estar al día</h3></div>
+                    <div class="card-body stack">
+                      <div class="mini-item"><div>Realiza tus pagos antes del vencimiento.</div></div>
+                      <div class="mini-item"><div>Guarda tus comprobantes como respaldo.</div></div>
+                      <div class="mini-item"><div>Si necesitas ayuda, contacta a tu asesor.</div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="footer-note">© 2024 Servillantas El Puente. Demo interactiva HTML.</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- TOASTS -->
+  <div class="toast-wrap" id="toastWrap"></div>
+
+  <!-- MODALS -->
+  <div class="modal-backdrop" id="modalRoot">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h3 id="modalTitle">Modal</h3>
+        <button class="btn small secondary" id="closeModal">Cerrar</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-actions" id="modalActions"></div>
+    </div>
+  </div>
+
+  <script>
+    const pages = [...document.querySelectorAll('.page')];
+    const navButtons = [...document.querySelectorAll('.nav-btn[data-page]')];
+    const toastWrap = document.getElementById('toastWrap');
+
+    function showToast(title, text){
+      const el = document.createElement('div');
+      el.className = 'toast';
+      el.innerHTML = `<strong>${title}</strong><div>${text}</div>`;
+      toastWrap.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(8px)';
+        setTimeout(() => el.remove(), 220);
+      }, 2600);
+    }
+
+    function activatePage(pageId, silent=false){
+      pages.forEach(p => p.classList.toggle('active', p.id === 'page-' + pageId));
+      navButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.page === pageId));
+      if(location.hash !== '#' + pageId) location.hash = pageId;
+      if(!silent) showToast('Módulo abierto', 'Ahora estás viendo: ' + pageId.charAt(0).toUpperCase() + pageId.slice(1));
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    navButtons.forEach(btn => btn.addEventListener('click', () => activatePage(btn.dataset.page)));
+    document.querySelectorAll('[data-goto]').forEach(btn => {
+      btn.addEventListener('click', () => activatePage(btn.dataset.goto));
+    });
+
+    // Hash navigation
+    const initialHash = (location.hash || '').replace('#','');
+    if(initialHash && document.getElementById('page-' + initialHash)) {
+      activatePage(initialHash, true);
+    }
+
+    window.addEventListener('hashchange', () => {
+      const h = (location.hash || '').replace('#','');
+      if(h && document.getElementById('page-' + h)) activatePage(h, true);
+    });
+
+    // Tabs
+    document.querySelectorAll('.tab-btn, .inner-nav button[data-tab]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const group = btn.dataset.tabGroup || 'settings';
+        const target = btn.dataset.tab;
+        document.querySelectorAll(`[data-tab-group="${group}"]`).forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll(`[data-tab-panel="${group}"]`).forEach(p => p.classList.toggle('active', p.dataset.tab === target));
+      });
+    });
+
+    // Sortable tables
+    document.querySelectorAll('table.sortable').forEach(table => {
+      const headers = table.querySelectorAll('thead th');
+      headers.forEach((th, index) => {
+        let asc = true;
+        th.addEventListener('click', () => {
+          const tbody = table.querySelector('tbody');
+          const rows = [...tbody.querySelectorAll('tr')];
+          rows.sort((a,b) => {
+            const acell = a.children[index];
+            const bcell = b.children[index];
+            const avalRaw = acell.dataset.sort ?? acell.innerText.trim();
+            const bvalRaw = bcell.dataset.sort ?? bcell.innerText.trim();
+            const anum = parseFloat(String(avalRaw).replace(/[^\d.-]/g,'')); 
+            const bnum = parseFloat(String(bvalRaw).replace(/[^\d.-]/g,''));
+            const useNum = !Number.isNaN(anum) && !Number.isNaN(bnum);
+            const aval = useNum ? anum : String(avalRaw).toLowerCase();
+            const bval = useNum ? bnum : String(bvalRaw).toLowerCase();
+            if(aval < bval) return asc ? -1 : 1;
+            if(aval > bval) return asc ? 1 : -1;
+            return 0;
+          });
+          asc = !asc;
+          rows.forEach(r => tbody.appendChild(r));
+          showToast('Tabla ordenada', 'Se ordenó la columna: ' + th.innerText.trim());
+        });
+      });
+    });
+
+    // Client filter
+    const clientFilter = document.getElementById('clientFilter');
+    if(clientFilter) {
+      clientFilter.addEventListener('input', () => {
+        const q = clientFilter.value.toLowerCase().trim();
+        document.querySelectorAll('#clientsTable tbody tr').forEach(tr => {
+          const match = tr.innerText.toLowerCase().includes(q);
+          tr.style.display = match ? '' : 'none';
+        });
+      });
+    }
+
+    // Modal system
+    const modalRoot = document.getElementById('modalRoot');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const modalActions = document.getElementById('modalActions');
+    const closeModal = document.getElementById('closeModal');
+
+    const modalTemplates = {
+      newClientModal: {
+        title: 'Nuevo cliente',
+        body: `
+          <div class="modal-grid">
+            <div class="field"><label>Nombre / razón social</label><input placeholder="Ej: Transportes del Chicamocha S.A.S."></div>
+            <div class="field"><label>Documento / NIT</label><input placeholder="900.123.456-7"></div>
+            <div class="field"><label>Teléfono</label><input placeholder="300 123 4567"></div>
+            <div class="field"><label>Correo</label><input placeholder="contacto@empresa.com"></div>
+            <div class="field"><label>Segmento</label><select><option>Empresarial</option><option>PYME</option><option>Comercial</option></select></div>
+            <div class="field"><label>Nivel de riesgo</label><select><option>S1</option><option>S2</option><option>S3</option></select></div>
+          </div>
+          <div class="subtle">Este formulario es demostrativo y simula el flujo de registro.</div>
+        `,
+        actions: `
+          <button class="btn secondary" data-close-modal>Cancelar</button>
+          <button class="btn primary" data-save="Cliente creado correctamente">Guardar cliente</button>
+        `
+      },
+      paymentModal: {
+        title: 'Registrar pago',
+        body: `
+          <div class="modal-grid">
+            <div class="field"><label>Cliente</label><select><option>Transportes del Valle S.A.S.</option><option>Logística Andina Ltda.</option></select></div>
+            <div class="field"><label>Canal</label><select><option>PSE</option><option>Nequi</option><option>Transferencia</option><option>Tarjeta</option></select></div>
+            <div class="field"><label>Monto</label><input placeholder="$ 0"></div>
+            <div class="field"><label>Referencia</label><input placeholder="PSE-987654"></div>
+            <div class="field"><label>Estado</label><select><option>Aprobado</option><option>En validación</option><option>Pendiente</option></select></div>
+            <div class="field"><label>Comprobante</label><input placeholder="comprobante.pdf"></div>
+          </div>
+        `,
+        actions: `
+          <button class="btn secondary" data-close-modal>Cancelar</button>
+          <button class="btn primary" data-save="Pago registrado en el demo">Registrar</button>
+        `
+      },
+      campaignModal: {
+        title: 'Programar campaña',
+        body: `
+          <div class="modal-grid">
+            <div class="field"><label>Nombre de campaña</label><input value="Recordatorio de pago - Mayo 2024"></div>
+            <div class="field"><label>Fecha y hora</label><input value="31/05/2024 10:00 AM"></div>
+            <div class="field"><label>Canal</label><select><option>SMS</option><option>Email</option><option>WhatsApp</option></select></div>
+            <div class="field"><label>Segmento</label><select><option>Riesgo S3 + 5 filtros</option></select></div>
+          </div>
+          <div class="field"><label>Notas</label><textarea rows="4">Campaña automatizada orientada a clientes en mora con enlace único de pago.</textarea></div>
+        `,
+        actions: `
+          <button class="btn secondary" data-close-modal>Cancelar</button>
+          <button class="btn primary" data-save="Campaña programada en esta demo">Confirmar</button>
+        `
+      },
+      exportModal: {
+        title: 'Exportar información',
+        body: `
+          <div class="field"><label>Formato</label><select><option>PDF</option><option>Excel</option><option>CSV</option></select></div>
+          <div class="field"><label>Contenido</label><select><option>Resumen ejecutivo</option><option>Listado actual</option><option>Reporte completo</option></select></div>
+          <div class="field"><label>Observación</label><textarea rows="3">Esta exportación es simulada para el demo HTML.</textarea></div>
+        `,
+        actions: `
+          <button class="btn secondary" data-close-modal>Cerrar</button>
+          <button class="btn primary" data-save="Exportación simulada generada">Exportar</button>
+        `
+      },
+      companyModal: {
+        title: 'Editar empresa',
+        body: `
+          <div class="modal-grid">
+            <div class="field"><label>Razón social</label><input value="Servillantas El Puente S.A.S."></div>
+            <div class="field"><label>NIT</label><input value="900.123.456-7"></div>
+            <div class="field"><label>Teléfono</label><input value="(+57) 601 123 4567"></div>
+            <div class="field"><label>Email</label><input value="info@servillantaselpuente.com"></div>
+          </div>
+        `,
+        actions: `
+          <button class="btn secondary" data-close-modal>Cancelar</button>
+          <button class="btn primary" data-save="Perfil de empresa actualizado">Guardar</button>
+        `
+      },
+      userModal: {
+        title: 'Agregar usuario',
+        body: `
+          <div class="modal-grid">
+            <div class="field"><label>Nombre</label><input placeholder="Nombre completo"></div>
+            <div class="field"><label>Correo</label><input placeholder="usuario@empresa.com"></div>
+            <div class="field"><label>Rol</label><select><option>Administrador</option><option>Gestor cartera</option><option>Analista</option><option>Visualizador</option></select></div>
+            <div class="field"><label>Estado</label><select><option>Activo</option><option>Inactivo</option></select></div>
+          </div>
+        `,
+        actions: `
+          <button class="btn secondary" data-close-modal>Cancelar</button>
+          <button class="btn primary" data-save="Usuario agregado al demo">Agregar</button>
+        `
+      },
+      integrationModal: {
+        title: 'Probar integración',
+        body: `
+          <div class="field"><label>Servicio</label><select><option>PSE</option><option>Nequi</option><option>SMTP</option><option>WhatsApp</option></select></div>
+          <div class="field"><label>Respuesta esperada</label><textarea rows="4">Conexión exitosa. Tiempo de respuesta: 214 ms. Estado: activo.</textarea></div>
+        `,
+        actions: `
+          <button class="btn secondary" data-close-modal>Cerrar</button>
+          <button class="btn primary" data-save="Prueba de integración completada">Ejecutar prueba</button>
+        `
+      },
+      templateModal: {
+        title: 'Administrar plantillas',
+        body: `
+          <div class="field"><label>Plantilla</label><select><option>Recordatorio pago - 5 días</option><option>Confirmación de pago</option><option>Enlace de pago</option></select></div>
+          <div class="field"><label>Contenido</label><textarea rows="6">Hola {nombre}, te recordamos que tienes un saldo pendiente de {monto}. Puedes ponerte al día aquí: {enlace_pago}</textarea></div>
+        `,
+        actions: `
+          <button class="btn secondary" data-close-modal>Cancelar</button>
+          <button class="btn primary" data-save="Plantilla actualizada">Guardar cambios</button>
+        `
+      },
+      settingsSaveModal: {
+        title: 'Guardar cambios',
+        body: `
+          <p>Esta acción simula el guardado de configuraciones del sistema en la demo.</p>
+          <div class="box"><strong>Áreas afectadas</strong><span class="muted">usuarios, permisos, integraciones y seguridad</span></div>
+        `,
+        actions: `
+          <button class="btn secondary" data-close-modal>Cancelar</button>
+          <button class="btn primary" data-save="Configuración guardada">Confirmar</button>
+        `
+      },
+      linkModal: {
+        title: 'Crear link de pago',
+        body: `
+          <div class="modal-grid">
+            <div class="field"><label>Cliente</label><select><option>Transportes del Valle S.A.S.</option><option>Autopartes del Norte</option></select></div>
+            <div class="field"><label>Monto</label><input placeholder="$ 0"></div>
+            <div class="field"><label>Fecha de expiración</label><input placeholder="28/05/2024"></div>
+            <div class="field"><label>Canal de envío</label><select><option>SMS</option><option>Email</option><option>WhatsApp</option></select></div>
+          </div>
+        `,
+        actions: `
+          <button class="btn secondary" data-close-modal>Cancelar</button>
+          <button class="btn primary" data-save="Link de pago generado">Crear link</button>
+        `
+      },
+      reconcileModal: {
+        title: 'Actualizar conciliación',
+        body: `
+          <p>Simula una nueva lectura de movimientos bancarios y recalcula diferencias.</p>
+          <div class="box"><strong>Resultado esperado</strong><span class="muted">Diferencia total estimada: $ 1.650.000</span></div>
+        `,
+        actions: `
+          <button class="btn secondary" data-close-modal>Cerrar</button>
+          <button class="btn primary" data-save="Conciliación actualizada">Actualizar</button>
+        `
+      },
+      editClientModal: {
+        title: 'Editar cliente',
+        body: `
+          <div class="modal-grid">
+            <div class="field"><label>Nombre</label><input value="Laura Gómez"></div>
+            <div class="field"><label>Documento</label><input value="1.098.765.432"></div>
+            <div class="field"><label>Teléfono</label><input value="316 555 2233"></div>
+            <div class="field"><label>Correo</label><input value="laura.gomez@email.com"></div>
+          </div>
+        `,
+        actions: `
+          <button class="btn secondary" data-close-modal>Cancelar</button>
+          <button class="btn primary" data-save="Cliente actualizado">Guardar</button>
+        `
+      },
+      importModal: {
+        title: 'Importar Excel',
+        body: `
+          <div class="field"><label>Archivo</label><input placeholder="clientes_servillantas.xlsx"></div>
+          <div class="field"><label>Notas</label><textarea rows="4">La importación es simulada y muestra el flujo esperado del sistema.</textarea></div>
+        `,
+        actions: `
+          <button class="btn secondary" data-close-modal>Cancelar</button>
+          <button class="btn primary" data-save="Importación completada con éxito">Importar</button>
+        `
+      },
+      quickActionModal: {
+        title: 'Acción rápida',
+        body: `
+          <div class="field"><label>Tipo de acción</label><select><option>Llamar cliente</option><option>Enviar recordatorio</option><option>Crear promesa de pago</option></select></div>
+          <div class="field"><label>Cliente</label><select><option>Transportes del Valle S.A.S.</option><option>Logística Andina Ltda.</option></select></div>
+        `,
+        actions: `
+          <button class="btn secondary" data-close-modal>Cerrar</button>
+          <button class="btn primary" data-save="Acción ejecutada en la demo">Ejecutar</button>
+        `
+      }
+    };
+
+    function openModal(key){
+      const config = modalTemplates[key];
+      if(!config) return;
+      modalTitle.textContent = config.title;
+      modalBody.innerHTML = config.body;
+      modalActions.innerHTML = config.actions;
+      modalRoot.classList.add('show');
+
+      modalActions.querySelectorAll('[data-close-modal]').forEach(btn => btn.addEventListener('click', closeModalFn));
+      modalActions.querySelectorAll('[data-save]').forEach(btn => btn.addEventListener('click', () => {
+        showToast('Acción completada', btn.dataset.save);
+        closeModalFn();
+      }));
+    }
+
+    function closeModalFn(){
+      modalRoot.classList.remove('show');
+    }
+
+    closeModal.addEventListener('click', closeModalFn);
+    modalRoot.addEventListener('click', e => {
+      if(e.target === modalRoot) closeModalFn();
+    });
+
+    document.querySelectorAll('[data-modal]').forEach(btn => {
+      btn.addEventListener('click', () => openModal(btn.dataset.modal));
+    });
+
+    // Global search quick suggestions by module names
+    document.getElementById('globalSearch').addEventListener('keydown', (e) => {
+      if(e.key === 'Enter') {
+        const q = e.target.value.toLowerCase().trim();
+        const moduleMap = [
+          ['dashboard','dashboard'],
+          ['clientes','clientes'],
+          ['cartera','cartera'],
+          ['expedientes','expedientes'],
+          ['campañas','campanas'],
+          ['campanas','campanas'],
+          ['pagos','pagos'],
+          ['reportes','reportes'],
+          ['configuracion','configuracion'],
+          ['portal','deudor'],
+          ['deudor','deudor']
+        ];
+        const found = moduleMap.find(([k]) => q.includes(k));
+        if(found) {
+          activatePage(found[1]);
+        } else {
+          showToast('Búsqueda rápida', 'No se encontró un módulo directo para: ' + q);
+        }
+      }
+    });
+
+    // Friendly action tiles / portal buttons
+    document.querySelectorAll('.action-tile').forEach(tile => {
+      tile.addEventListener('click', () => showToast('Interacción demo', 'Acción simulada del portal del deudor.'));
+    });
+
+    // default welcome toast
+    setTimeout(() => {
+      showToast('Demo lista', 'Navega entre módulos y prueba modales, tabs y tablas ordenables.');
+    }, 350);
+  </script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule ^admin-landing$ index.php?r=/admin-landing [L,QSA]

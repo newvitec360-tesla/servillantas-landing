@@ -1,0 +1,64 @@
+{
+  "modules": [
+    {
+      "id": "auth",
+      "name": "Autenticación y roles",
+      "phase": 1
+    },
+    {
+      "id": "etl",
+      "name": "Carga, migración y validación de datos",
+      "phase": 1
+    },
+    {
+      "id": "clientes",
+      "name": "Maestro de clientes",
+      "phase": 1
+    },
+    {
+      "id": "obligaciones",
+      "name": "Cartera / obligaciones",
+      "phase": 1
+    },
+    {
+      "id": "documentos",
+      "name": "Soporte documental",
+      "phase": 1
+    },
+    {
+      "id": "gestiones",
+      "name": "Gestión de cobranza",
+      "phase": 1
+    },
+    {
+      "id": "campanas",
+      "name": "Comunicaciones y campañas",
+      "phase": 2
+    },
+    {
+      "id": "pagos",
+      "name": "Recaudo y pagos",
+      "phase": 2
+    },
+    {
+      "id": "reportes",
+      "name": "Dashboard y analítica",
+      "phase": 1
+    },
+    {
+      "id": "parametrizacion",
+      "name": "Parametrización y reglas",
+      "phase": 3
+    },
+    {
+      "id": "auditoria",
+      "name": "Auditoría y trazabilidad",
+      "phase": 1
+    },
+    {
+      "id": "portal-deudor",
+      "name": "Portal / landing del deudor",
+      "phase": 2
+    }
+  ]
+}

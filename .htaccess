@@ -19,5 +19,22 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 # Block storage directory
 RewriteRule ^storage/ - [F,L]
 
-# DirectoryIndex — serve index.php first
+# DirectoryIndex
 DirectoryIndex index.php index.html
+
+# === Cache Control ===
+# Force no-cache on PHP/HTML to always get fresh content
+<FilesMatch "\.(php|html)$">
+    <IfModule mod_headers.c>
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </IfModule>
+</FilesMatch>
+
+# Allow caching on static assets (CSS, JS, images) with short TTL
+<FilesMatch "\.(css|js|png|jpg|jpeg|gif|webp|svg|ico|woff2?)$">
+    <IfModule mod_headers.c>
+        Header set Cache-Control "public, max-age=3600"
+    </IfModule>
+</FilesMatch>

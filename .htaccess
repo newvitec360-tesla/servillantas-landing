@@ -1,6 +1,5 @@
 # === Servillantas El Puente — Landing Only ===
 # Domain: servillantaselpuente.com
-# Purpose: Redirect root to landing, protect sensitive files
 
 RewriteEngine On
 
@@ -20,5 +19,5 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 # Block storage directory
 RewriteRule ^storage/ - [F,L]
 
-# Root request → redirect to landing router
-RewriteRule ^$ landing/index.html [L]
+# DirectoryIndex — serve index.php first
+DirectoryIndex index.php index.html
